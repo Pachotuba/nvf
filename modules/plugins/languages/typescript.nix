@@ -136,11 +136,13 @@ in {
         description = "vscode-js-debug package";
         type = package;
         default = pkgs.vscode-js-debug;
+        defaultText = "pkgs.vscode-js-debug";
       };
       filetypes = mkOption {
         description = "Filetypes to attach debugger configurations to";
         type = listOf str;
         default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
+        defaultText = "[ 'typescript' 'javascript' 'javascriptreact' 'typescriptreact' ]";
       };
     };
 
@@ -233,6 +235,13 @@ in {
             }
             for _, language in ipairs ${toLuaObject cfg.dap.filetypes} do
               dap.configurations[language] = {
+                {
+                  type = "pwa-node",
+                  request = "launch",
+                  name = "Launch file",
+                  program = "''${file}",
+                  cwd = "''${workspaceFolder}",
+                },
                 {
                   type = "pwa-node",
                   request = "attach",
