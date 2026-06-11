@@ -9,7 +9,7 @@
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib) genAttrs;
   inherit (lib.meta) getExe;
-  inherit (lib.types) enum bool listOf;
+  inherit (lib.types) enum bool listOf package str;
   inherit (lib.nvim.attrsets) mapListToAttrs;
   inherit (lib.nvim.lua) toLuaObject;
   inherit (lib.nvim.types) mkGrammarOption diagnostics mkPluginSetupOption enumWithRename;
@@ -125,6 +125,25 @@ in {
       };
     };
 
+    dap = {
+      enable = mkOption {
+        description = "Typescript/Javascript Debug Adapter support";
+        type = bool;
+        default = config.vim.languages.enableDAP;
+        defaultText = literalExpression "config.vim.languages.enableDAP";
+      };
+      package = mkOption {
+        description = "vscode-js-debug package";
+        type = package;
+        default = pkgs.vscode-js-debug;
+      };
+      filetypes = mkOption {
+        description = "Filetypes to attach debugger configurations to";
+        type = listOf str;
+        default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
+      };
+    };
+
     extraDiagnostics = {
       enable = mkEnableOption "extra Typescript/Javascript diagnostics" // {default = config.vim.languages.enableExtraDiagnostics;};
 
@@ -192,6 +211,38 @@ in {
               value = formats.${name};
             })
             cfg.format.type;
+        };
+      };
+    })
+
+    (mkIf cfg.dap.enable {
+      vim = {
+        debugger.nvim-dap = {
+          enable = true;
+          sources.vscode-js-debug = ''
+            dap.adapters["pwa-node"] = {
+              type = "server",
+              host = "127.0.0.1",
+              port = "''${port}",
+              executable = {
+                command = "${cfg.dap.package}/bin/js-debug",
+                args = {
+                  "''${port}",
+                },
+              },
+            }
+            for _, language in ipairs ${toLuaObject cfg.dap.filetypes} do
+              dap.configurations[language] = {
+                {
+                  type = "pwa-node",
+                  request = "attach",
+                  name = "Attach",
+                  processId = require('dap.utils').pick_process,
+                  cwd = "''${workspaceFolder}",
+                },
+              }
+            }
+          '';
         };
       };
     })
