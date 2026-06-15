@@ -66,7 +66,10 @@ isMaximal: {
       sql.enable = isMaximal;
       java.enable = isMaximal;
       kotlin.enable = isMaximal;
-      typescript.enable = isMaximal;
+      typescript = {
+        enable = true;
+        dap.enable = true;
+      };
       go.enable = isMaximal;
       lua.enable = isMaximal;
       zig.enable = isMaximal;
