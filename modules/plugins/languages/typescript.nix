@@ -144,6 +144,30 @@ in {
         default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
         defaultText = "[ 'typescript' 'javascript' 'javascriptreact' 'typescriptreact' ]";
       };
+      configurations = {
+        launchFile = {
+          enable = mkOption {
+            description = "Whether to enable the 'Launch file' option for vscode-js-debug";
+            type = bool;
+            default = true;
+            defaultText = "true";
+          };
+        };
+        attachProcess = {
+          enable = mkOption {
+            description = "Whether to enable the 'Attach process' option for vscode-js-debug";
+            type = bool;
+            default = true;
+            defaultText = "true";
+          };
+          filter = mkOption {
+            description = "Filter to use when searching for processes to attach to";
+            type = str;
+            default = "node";
+            defaultText = "'node'";
+          };
+        };
+      };
     };
 
     extraDiagnostics = {
@@ -230,10 +254,11 @@ in {
                 command = "${cfg.dap.package}/bin/js-debug",
                 args = {
                   "''${port}",
+                  "127.0.0.1"
                 },
               },
             }
-            for _, language in ipairs ${toLuaObject cfg.dap.filetypes} do
+            for _, language in ipairs(${toLuaObject cfg.dap.filetypes}) do
               dap.configurations[language] = {
                 {
                   type = "pwa-node",
@@ -245,12 +270,12 @@ in {
                 {
                   type = "pwa-node",
                   request = "attach",
-                  name = "Attach",
+                  name = "Attach to process",
                   processId = require('dap.utils').pick_process,
                   cwd = "''${workspaceFolder}",
                 },
               }
-            }
+            end
           '';
         };
       };
