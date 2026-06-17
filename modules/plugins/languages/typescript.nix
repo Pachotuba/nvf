@@ -9,7 +9,7 @@
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib) genAttrs;
   inherit (lib.meta) getExe;
-  inherit (lib.types) enum bool listOf package str;
+  inherit (lib.types) enum bool listOf package str lines;
   inherit (lib.nvim.attrsets) mapListToAttrs;
   inherit (lib.nvim.lua) toLuaObject;
   inherit (lib.nvim.types) mkGrammarOption diagnostics mkPluginSetupOption enumWithRename;
@@ -137,7 +137,7 @@ in {
         description = "vscode-js-debug package";
         type = package;
         default = pkgs.vscode-js-debug;
-        defaultText = "pkgs.vscode-js-debug";
+        defaultText = literalExpression "pkgs.vscode-js-debug";
       };
 
       filetypes = mkOption {
@@ -148,18 +148,21 @@ in {
       };
 
       customConfigs = mkOption {
-        description = "Custom lua to append at the end of the dap.configurations table";
-        type = str;
-        default = "";
-        defaultText = ''
+        description = ''
+          Custom DAP configurations to append to each filetype's configuration
+          table, e.g.:
+          ```lua
             {
-              type = "pwa-xxxx",
-              request = "",
-              name = "",
-              program = "",
-              cwd = "",
+              type = "pwa-node",
+              request = "launch",
+              name = "Custom launch",
+              program = "''${file}",
+              cwd = "''${workspaceFolder}",
             },
+          ```
         '';
+        type = lines;
+        default = "";
       };
     };
 
