@@ -126,9 +126,8 @@ in {
     };
 
     dap = {
-      enable = mkOption {
-        description = "Typescript/Javascript Debug Adapter support";
-        type = bool;
+      enable = mkEnableOption {
+        description = "Typescript/Javascript debug adapter";
         default = config.vim.languages.enableDAP;
         defaultText = literalExpression "config.vim.languages.enableDAP";
       };
@@ -144,29 +143,19 @@ in {
         default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
         defaultText = "[ 'typescript' 'javascript' 'javascriptreact' 'typescriptreact' ]";
       };
-      configurations = {
-        launchFile = {
-          enable = mkOption {
-            description = "Whether to enable the 'Launch file' option for vscode-js-debug";
-            type = bool;
-            default = true;
-            defaultText = "true";
-          };
-        };
-        attachProcess = {
-          enable = mkOption {
-            description = "Whether to enable the 'Attach process' option for vscode-js-debug";
-            type = bool;
-            default = true;
-            defaultText = "true";
-          };
-          filter = mkOption {
-            description = "Filter to use when searching for processes to attach to";
-            type = str;
-            default = "node";
-            defaultText = "'node'";
-          };
-        };
+      customConfigs = mkOption {
+        description = "Custom lua to append at the end of the dap.configurations table";
+        type = str;
+        default = "";
+        defaultText = ''
+            {
+              type = "pwa-xxxx",
+              request = "",
+              name = "",
+              program = "",
+              cwd = "",
+            },
+        '';
       };
     };
 
@@ -270,10 +259,18 @@ in {
                 {
                   type = "pwa-node",
                   request = "attach",
-                  name = "Attach to process",
+                  name = "Attach (pick process)",
                   processId = require('dap.utils').pick_process,
                   cwd = "''${workspaceFolder}",
                 },
+                {
+                  type = "pwa-node",
+                  request = "attach",
+                  name = "Attach (port 9229)",
+                  port = 9229,
+                  cwd = "''${workspaceFolder}",
+                },
+                ${cfg.dap.customConfigs}
               }
             end
           '';
