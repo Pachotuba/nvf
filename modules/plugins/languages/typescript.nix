@@ -14,11 +14,34 @@
   inherit (lib.nvim.lua) toLuaObject;
   inherit (lib.nvim.types) mkGrammarOption mkPluginSetupOption enumWithRename;
   inherit (lib.nvim.dag) entryAnywhere;
+  inherit (lib.lists) flatten;
 
   cfg = config.vim.languages.typescript;
 
   defaultServers = ["typescript-language-server"];
   servers = ["typescript-language-server" "deno" "typescript-go" "angular-language-server" "emmet-ls"];
+
+  defaultDebugger = ["vscode-js-debug"];
+  dapConfigurations = {
+    vscode-js-debug = let
+      port = 9229;
+    in [
+      {
+        type = "pwa-node";
+        request = "launch";
+        name = "Launch File";
+        program = "\${file}"; # This configuration will launch the current file if used.
+        cwd = "\${workspaceFolder}";
+      }
+      {
+        type = "pwa-node";
+        request = "attach";
+        name = "Attach (port 9229)";
+        cwd = "\${workspaceFolder}";
+        inherit port;
+      }
+    ];
+  };
 
   # TODO: specify packages
   defaultFormat = ["prettier"];
@@ -96,6 +119,12 @@ in {
         type = listOf (enum (attrNames formats));
         default = defaultFormat;
       };
+    };
+
+    debugger = mkOption {
+        type = listOf (enum (attrNames dapConfigurations));
+        default = defaultDebugger;
+        description = "Typescript/Javascript debugger to use";
     };
 
     dap = {
@@ -223,6 +252,11 @@ in {
     })
 
     (mkIf cfg.dap.enable {
+      vim.debugger.nvim-dap = {
+        enable = true;
+        presets = mkMerge (map (name: {${name}.enable = true;}) cfg.dap.debugger);
+        configurations.typescript = flatten (map (name: dapConfigurations.${name}) cfg.dap.debugger);
+      };
       vim = {
         debugger.nvim-dap = {
           enable = true;
