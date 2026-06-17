@@ -116,8 +116,20 @@ in {
       filetypes = mkOption {
         description = "Filetypes to attach debugger configurations to";
         type = listOf str;
-        default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
-        defaultText = "[ 'typescript' 'javascript' 'javascriptreact' 'typescriptreact' ]";
+        default = [
+          "typescript"
+          "javascript"
+          "javascriptreact"
+          "typescriptreact"
+        ];
+        defaultText = ''
+          [
+            'typescript'
+            'javascript'
+            'javascriptreact'
+            'typescriptreact'
+          ]
+        '';
       };
 
       customConfigs = mkOption {
