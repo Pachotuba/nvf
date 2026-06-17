@@ -126,23 +126,27 @@ in {
     };
 
     dap = {
-      enable = mkEnableOption {
-        description = "Typescript/Javascript debug adapter";
-        default = config.vim.languages.enableDAP;
-        defaultText = literalExpression "config.vim.languages.enableDAP";
-      };
+      enable =
+        mkEnableOption "Typescript/Javascript debug adapter"
+        // {
+          default = config.vim.languages.enableDAP;
+          defaultText = literalExpression "config.vim.languages.enableDAP";
+        };
+
       package = mkOption {
         description = "vscode-js-debug package";
         type = package;
         default = pkgs.vscode-js-debug;
         defaultText = "pkgs.vscode-js-debug";
       };
+
       filetypes = mkOption {
         description = "Filetypes to attach debugger configurations to";
         type = listOf str;
         default = [ "typescript" "javascript" "javascriptreact" "typescriptreact" ];
         defaultText = "[ 'typescript' 'javascript' 'javascriptreact' 'typescriptreact' ]";
       };
+
       customConfigs = mkOption {
         description = "Custom lua to append at the end of the dap.configurations table";
         type = str;
@@ -254,13 +258,6 @@ in {
                   request = "launch",
                   name = "Launch file",
                   program = "''${file}",
-                  cwd = "''${workspaceFolder}",
-                },
-                {
-                  type = "pwa-node",
-                  request = "attach",
-                  name = "Attach (pick process)",
-                  processId = require('dap.utils').pick_process,
                   cwd = "''${workspaceFolder}",
                 },
                 {
