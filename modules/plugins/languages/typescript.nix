@@ -10,11 +10,11 @@
   inherit (lib) genAttrs;
   inherit (lib.meta) getExe;
   inherit (lib.types) enum bool listOf package str lines;
+  inherit (lib.generators) mkLuaInline;
   inherit (lib.nvim.attrsets) mapListToAttrs;
   inherit (lib.nvim.lua) toLuaObject;
   inherit (lib.nvim.types) mkGrammarOption mkPluginSetupOption enumWithRename;
   inherit (lib.nvim.dag) entryAnywhere;
-  inherit (lib.lists) flatten;
 
   cfg = config.vim.languages.typescript;
 
@@ -24,22 +24,30 @@
   defaultDebugger = ["vscode-js-debug"];
   dapConfigurations = {
     vscode-js-debug = let
+      baseConfig = {
+        type = "pwa-node";
+        cwd = "\${workspaceFolder}";
+      };
       port = 9229;
     in [
-      {
-        type = "pwa-node";
-        request = "launch";
-        name = "Launch File";
-        program = "\${file}"; # This configuration will launch the current file if used.
-        cwd = "\${workspaceFolder}";
-      }
-      {
-        type = "pwa-node";
-        request = "attach";
-        name = "Attach (port 9229)";
-        cwd = "\${workspaceFolder}";
-        inherit port;
-      }
+      (baseConfig
+        // {
+          request = "launch";
+          name = "Launch File";
+          program = "\${file}"; # This configuration will launch the current file if used.
+        })
+      (baseConfig
+        // {
+          request = "attach";
+          name = "Attach (port 9229)";
+          port = mkLuaInline ''
+            function()
+              return tonumber(vim.fn.input("Port: ", "9229"))
+            end,
+          '';
+          # inherit port;
+        })
+      # TODO: add pwa-chrome/pwa-msedge configurations
     ];
   };
 
@@ -127,59 +135,6 @@ in {
         description = "Typescript/Javascript debugger to use";
     };
 
-    dap = {
-      enable =
-        mkEnableOption "Typescript/Javascript debug adapter"
-        // {
-          default = config.vim.languages.enableDAP;
-          defaultText = literalExpression "config.vim.languages.enableDAP";
-        };
-
-      package = mkOption {
-        description = "vscode-js-debug package";
-        type = package;
-        default = pkgs.vscode-js-debug;
-        defaultText = literalExpression "pkgs.vscode-js-debug";
-      };
-
-      filetypes = mkOption {
-        description = "Filetypes to attach debugger configurations to";
-        type = listOf str;
-        default = [
-          "typescript"
-          "javascript"
-          "javascriptreact"
-          "typescriptreact"
-        ];
-        defaultText = ''
-          [
-            'typescript'
-            'javascript'
-            'javascriptreact'
-            'typescriptreact'
-          ]
-        '';
-      };
-
-      customConfigs = mkOption {
-        description = ''
-          Custom DAP configurations to append to each filetype's configuration
-          table, e.g.:
-          ```lua
-            {
-              type = "pwa-node",
-              request = "launch",
-              name = "Custom launch",
-              program = "''${file}",
-              cwd = "''${workspaceFolder}",
-            },
-          ```
-        '';
-        type = lines;
-        default = "";
-      };
-    };
-
     extraDiagnostics = {
       enable = mkEnableOption "extra Typescript/Javascript diagnostics" // {default = config.vim.languages.enableExtraDiagnostics;};
 
@@ -252,10 +207,15 @@ in {
     })
 
     (mkIf cfg.dap.enable {
-      vim.debugger.nvim-dap = {
+      vim.debugger.nvim-dap = let
+        conf = mkMerge (map (name: dapConfigurations.${name}) cfg.dap.debugger);
+      in {
         enable = true;
         presets = mkMerge (map (name: {${name}.enable = true;}) cfg.dap.debugger);
-        configurations.typescript = flatten (map (name: dapConfigurations.${name}) cfg.dap.debugger);
+        configurations = {
+          typescript = conf;
+          javascript = conf;
+        };
       };
       vim = {
         debugger.nvim-dap = {
