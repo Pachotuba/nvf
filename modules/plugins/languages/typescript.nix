@@ -129,10 +129,19 @@ in {
       };
     };
 
-    debugger = mkOption {
-        type = listOf (enum (attrNames dapConfigurations));
-        default = defaultDebugger;
-        description = "Typescript/Javascript debugger to use";
+    dap = {
+      enable =
+        mkEnableOption "Enable Typescript/Javascript Debug Adapter"
+        // {
+          default = config.vim.languages.enableDAP;
+          defaultText = literalExpression "config.vim.languages.enableDAP";
+        };
+
+      debugger = mkOption {
+          type = listOf (enum (attrNames dapConfigurations));
+          default = defaultDebugger;
+          description = "Typescript/Javascript debugger to use";
+      };
     };
 
     extraDiagnostics = {
@@ -215,44 +224,6 @@ in {
         configurations = {
           typescript = conf;
           javascript = conf;
-        };
-      };
-      vim = {
-        debugger.nvim-dap = {
-          enable = true;
-          sources.vscode-js-debug = ''
-            dap.adapters["pwa-node"] = {
-              type = "server",
-              host = "127.0.0.1",
-              port = "''${port}",
-              executable = {
-                command = "${cfg.dap.package}/bin/js-debug",
-                args = {
-                  "''${port}",
-                  "127.0.0.1"
-                },
-              },
-            }
-            for _, language in ipairs(${toLuaObject cfg.dap.filetypes}) do
-              dap.configurations[language] = {
-                {
-                  type = "pwa-node",
-                  request = "launch",
-                  name = "Launch file",
-                  program = "''${file}",
-                  cwd = "''${workspaceFolder}",
-                },
-                {
-                  type = "pwa-node",
-                  request = "attach",
-                  name = "Attach (port 9229)",
-                  port = 9229,
-                  cwd = "''${workspaceFolder}",
-                },
-                ${cfg.dap.customConfigs}
-              }
-            end
-          '';
         };
       };
     })

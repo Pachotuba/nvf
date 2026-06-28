@@ -22,8 +22,8 @@ in {
   config.vim.debugger.nvim-dap.adapters = mkIf cfg.enable {
     vscode-js-debug = {
       type = "executable";
-      host = "127.0.0.1";
-      port = "\${port}";
+      # host = "127.0.0.1";
+      # port = "\${port}";
       command = "${pkgs.vscode-js-debug}/bin/js-debug";
       args = [
         "\${port}"
