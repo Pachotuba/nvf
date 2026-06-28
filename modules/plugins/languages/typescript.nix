@@ -28,7 +28,6 @@
         type = "pwa-node";
         cwd = "\${workspaceFolder}";
       };
-      port = 9229;
     in [
       (baseConfig
         // {
@@ -43,9 +42,8 @@
           port = mkLuaInline ''
             function()
               return tonumber(vim.fn.input("Port: ", "9229"))
-            end,
+            end
           '';
-          # inherit port;
         })
       # TODO: add pwa-chrome/pwa-msedge configurations
     ];

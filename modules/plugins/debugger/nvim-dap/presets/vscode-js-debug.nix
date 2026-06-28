@@ -6,6 +6,7 @@
 }: let
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption;
+  inherit (lib.meta) getExe;
 
   cfg = config.vim.debugger.nvim-dap.presets.vscode-js-debug;
 in {
@@ -20,11 +21,11 @@ in {
   };
 
   config.vim.debugger.nvim-dap.adapters = mkIf cfg.enable {
-    vscode-js-debug = {
+    pwa-node = {
       type = "executable";
       # host = "127.0.0.1";
       # port = "\${port}";
-      command = "${pkgs.vscode-js-debug}/bin/js-debug";
+      command = "${getExe pkgs.vscode-js-debug}";
       args = [
         "\${port}"
         "127.0.0.1"
