@@ -33,6 +33,10 @@
     golines = {
       command = "${pkgs.golines}/bin/golines";
     };
+
+    goimports = {
+      command = "${pkgs.gotools}/bin/goimports";
+    };
   };
 
   defaultDebugger = "delve";
@@ -190,6 +194,13 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [
+    {
+      vim.filetype.extension = {
+        gohtml = "gotmpl";
+        tmpl = "gotmpl";
+      };
+    }
+
     (mkIf cfg.treesitter.enable {
       vim.treesitter = {
         enable = true;

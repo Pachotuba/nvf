@@ -348,6 +348,8 @@
 
 - Add `emmet-ls` to the supported LSPs for all languages it supports.
 
+- Added `gitlab-ci-ls`.
+
 - Added `phpantom` LSP preset and into `languages.php`.
 
 - Moved extra diagnostic modules under `diagnostics.presets.<name>` this will
@@ -374,6 +376,10 @@
 - Added some Tree-sitter filetype mappings for:
   - `bash` = `ash`, `dash`, `zsh`
   - `yaml` = `yaml`
+
+- Fix `astro-language-server` missing typescript.
+
+- Fixed broken filetypes.
 
 - Added `vim.lsp.presets.<name>` to contain LSP configurations. This allows for
   more flexibility in nvf and reuse of LSPs across languages. Dropped
@@ -635,5 +641,9 @@ https://github.com/gorbit99/codewindow.nvim
 
 - Renamed
   `languages.typescript.extensions.ts-error-translator.auto_override_publish_diagnostics`
+
+[marciosobel](https://github.com/marciosobel)
+
+- Added `goimports` as supported formatters to `vim.languages.go`.
 
 <!-- vim: set textwidth=80: -->
