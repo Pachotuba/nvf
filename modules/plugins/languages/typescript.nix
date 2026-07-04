@@ -4,12 +4,12 @@
   lib,
   ...
 }: let
-  inherit (builtins) attrNames elem;
+  inherit (builtins) attrNames;
   inherit (lib.options) mkEnableOption mkOption literalExpression;
   inherit (lib.modules) mkIf mkMerge;
-  inherit (lib) genAttrs;
+  inherit (lib) genAttrs elem;
   inherit (lib.meta) getExe;
-  inherit (lib.types) enum bool listOf package str lines;
+  inherit (lib.types) enum bool coercedTo listOf ;
   inherit (lib.generators) mkLuaInline;
   inherit (lib.nvim.attrsets) mapListToAttrs;
   inherit (lib.nvim.lua) toLuaObject;
@@ -51,27 +51,12 @@
 
   # TODO: specify packages
   defaultFormat = ["prettier"];
-  formats = {
-    prettier = {
-      command = getExe pkgs.prettier;
-    };
-
-    prettierd = {
-      command = getExe pkgs.prettierd;
-    };
-
-    biome = {
-      command = getExe pkgs.biome;
-    };
-
-    biome-check = {
-      command = getExe pkgs.biome;
-    };
-
-    biome-organize-imports = {
-      command = getExe pkgs.biome;
-    };
-  };
+  formats = ["prettier" "biome" "biome-check" "biome-organize-imports" "deno" "astyle"];
+  formatType = listOf (coercedTo (enum ["prettierd"]) (_:
+    lib.warn
+    "vim.languages.typescript.format.type: prettierd is deprecated, use prettier instead"
+    "prettier")
+  (enum formats));
 
   defaultDiagnosticsProvider = ["eslint_d"];
   diagnosticsProviders = ["eslint_d" "biomejs"];
@@ -122,7 +107,7 @@ in {
 
       type = mkOption {
         description = "Typescript/Javascript formatter to use";
-        type = listOf (enum (attrNames formats));
+        type = formatType;
         default = defaultFormat;
       };
     };
@@ -143,7 +128,12 @@ in {
     };
 
     extraDiagnostics = {
-      enable = mkEnableOption "extra Typescript/Javascript diagnostics" // {default = config.vim.languages.enableExtraDiagnostics;};
+      enable =
+        mkEnableOption "extra Typescript/Javascript diagnostics"
+        // {
+          default = config.vim.languages.enableExtraDiagnostics;
+          defaultText = literalExpression "config.vim.languages.enableExtraDiagnostics";
+        };
 
       types = mkOption {
         type = listOf (enum diagnosticsProviders);
@@ -198,17 +188,10 @@ in {
     (mkIf cfg.format.enable {
       vim.formatter.conform-nvim = {
         enable = true;
-        setupOpts = {
-          formatters_by_ft = {
-            typescript = cfg.format.type;
-            javascript = cfg.format.type;
-          };
-          formatters =
-            mapListToAttrs (name: {
-              inherit name;
-              value = formats.${name};
-            })
-            cfg.format.type;
+        presets = genAttrs cfg.format.type (_: {enable = true;});
+        setupOpts.formatters_by_ft = {
+          typescript = cfg.format.type;
+          javascript = cfg.format.type;
         };
       };
     })

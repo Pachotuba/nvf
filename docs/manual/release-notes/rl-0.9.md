@@ -126,6 +126,18 @@
   module provides jsx/tsx support. This is a step of cleaning up the Typescript
   module for the future.
 
+- Removed `vim.languages.<lang>.format.package` options across 20 languages.
+  Support for custom formatter packages is dropped; use
+  `vim.formatter.conform-nvim.setupOpts.formatters.<name>.command` to customize
+  the formatter binary instead.
+
+- Renamed `ruff-check` formatter to `ruff-fix`.
+
+- Renamed `denofmt`/`deno_fmt` formatters to `deno`.
+
+- `prettierd` formatter is dropped entirely in the last few modules, use
+  `prettier` instead.
+
 [dathegreat](https://github.com/dathegreat):
 
 - Haskell LSP now defaults to haskell-language-server, haskell-tools based LSP
@@ -335,6 +347,9 @@
 
 [Snoweuph](https://github.com/snoweuph)
 
+- Added {option}`vim.formatter.conform-nvim.presets.just.enable` for justfile
+  formatting.
+
 - Added {option}`vim.lsp.presets.jls.enable` and made it available under
   `vim.languages.java.lsp.servers`.
 
@@ -529,6 +544,14 @@
 
 - Enable `nil.settings.nil.nix.autoArchive` by default.
 
+- Added `vim.formatter.conform-nvim.presets.<name>` to contain formatter
+  configurations. This allows for more flexibility in nvf and reuse of
+  formatters across languages.
+
+- Refactored all language modules to consume formatter presets via
+  `vim.formatter.conform-nvim.presets` instead of defining formatter
+  configurations inline.
+
 [vagahbond](https://github.com/vagahbond): [codewindow.nvim]:
 https://github.com/gorbit99/codewindow.nvim
 
@@ -539,6 +562,10 @@ https://github.com/gorbit99/codewindow.nvim
 
 - Fix non-functional `vim.keymaps.*.noremap`. Now, setting it to false is
   equivalent to `:lua vim.keymap.set(..., { remap = true })`
+
+[mad-moss](https://github.com/mad-moss):
+
+- Add [mini.cmdline](https://github.com/nvim-mini/mini.cmdline)
 
 [kazimazi](https://github.com/kazimazi):
 
