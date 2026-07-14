@@ -77,6 +77,8 @@ isMaximal: {
       typst.enable = isMaximal;
       rust = {
         enable = isMaximal;
+        # Can only be enabled if lsp.enable = false
+        extensions.rustaceanvim.enable = false;
         extensions.crates-nvim.enable = isMaximal;
       };
       toml.enable = isMaximal;
@@ -302,6 +304,7 @@ isMaximal: {
 
     presence = {
       neocord.enable = false;
+      cord-nvim.enable = false;
     };
   };
 }

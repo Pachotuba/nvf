@@ -381,6 +381,19 @@
       "url": "https://github.com/zbirenbaum/copilot.lua/archive/760912b5992e1d6437378a9c7f2b0cb950966cf5.tar.gz",
       "hash": "sha256-xmGMDVfypiJ8y4LJ0zGYsClVkjyuNH8B9U5XEeE0bN4="
     },
+    "cord-nvim": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "vyfor",
+        "repo": "cord.nvim"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "b08b9245d2973eda91437d2de5c8746b9f510d31",
+      "url": "https://github.com/vyfor/cord.nvim/archive/b08b9245d2973eda91437d2de5c8746b9f510d31.tar.gz",
+      "hash": "sha256-T8HeOSj6IZZa5WfWRGnER+slQ/6OQn0UTLd0zns31b4="
+    },
     "crates-nvim": {
       "type": "Git",
       "repository": {
@@ -2270,10 +2283,11 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v3.16.5",
-      "revision": "9577347ad6d92d60b915e63840bb6849fd7ac8de",
-      "url": "https://api.github.com/repos/obsidian-nvim/obsidian.nvim/tarball/refs/tags/v3.16.5",
-      "hash": "sha256-jSaAT7DCGsgzNJCd+ey3My2zqQ7kDcRm5ALDTOJKmJM="
+      "version": "v3.16.4",
+      "revision": "190bcb5f6a6f36f69754cdddd1abf6cdb54641e7",
+      "url": "https://api.github.com/repos/obsidian-nvim/obsidian.nvim/tarball/refs/tags/v3.16.4",
+      "hash": "sha256-9Su5t8cJAHlXV+EE4GLa1+BhezfHZIZgl2P6kBrkX8E=",
+      "frozen": true
     },
     "oil-git-status.nvim": {
       "type": "Git",

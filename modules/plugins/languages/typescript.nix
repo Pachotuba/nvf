@@ -19,7 +19,14 @@
   cfg = config.vim.languages.typescript;
 
   defaultServers = ["typescript-language-server"];
-  servers = ["typescript-language-server" "deno" "typescript-go" "angular-language-server" "emmet-ls"];
+  servers = [
+    "typescript-language-server"
+    "deno"
+    "typescript-go"
+    "emmet-ls"
+    # deprecated
+    "angular-language-server"
+  ];
 
   defaultDebugger = ["vscode-js-debug"];
   dapConfigurations = {

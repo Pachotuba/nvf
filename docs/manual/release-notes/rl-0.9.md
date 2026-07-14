@@ -45,6 +45,8 @@
 
 [Snoweuph](https://github.com/snoweuph)
 
+- Moved all angular related stuff into its own language module.
+
 - Remove `mind.nvim`. This plugin doesn't exist anymore. The original author
   deleted all their GitHub repositories and moved to
   [sourcehut](https://sr.ht/~hadronized/). Some repositories where migrated.
@@ -148,6 +150,11 @@
 - Renamed `roslyn_ls` to `roslyn-ls`
 - Turned `omnisharp-extended-lsp-nvim` into an extension disabled by default
 - Turned `csharpls-extended-lsp-nvim` into an extension disabled by default
+
+[sjcobb2022](https://github.com/caueanjos)
+
+- Rust module is now no longer dependant on `rustaceanvim` by default. Use
+  `vim.languages.rust.extensions.rustaceanvim.enable` if needed.
 
 ## Changelog {#sec-release-0-9-changelog}
 
@@ -355,6 +362,8 @@
 
 - Added {option}`vim.languages.java.dap.enable` with the `jls` DAP.
 
+- Fix tailwind LSP running on non tailwind projects.
+
 - Use nvf nix Tree-sitter injections in the docs.
 
 - Added Mago for PHP formatting and linting.
@@ -397,6 +406,8 @@
 - Fix `astro-language-server` missing typescript.
 
 - Fixed broken filetypes.
+
+- Added Treesitter injections for `sqlx` in the `languages.rust` module.
 
 - Added `vim.lsp.presets.<name>` to contain LSP configurations. This allows for
   more flexibility in nvf and reuse of LSPs across languages. Dropped
@@ -498,6 +509,8 @@
 - Added `languages.standard-ml`.
 
 - Added `languages.vue`.
+
+- Added `languages.query`.
 
 - Add `languages.fluent` using the official plugin. This only provides
   highlighting.
@@ -667,6 +680,12 @@ https://github.com/gorbit99/codewindow.nvim
 - Add `prettier` and `prettierd` as supported formatters to
   `vim.languages.json`.
 
+[sjcobb2022](https://github.com/sjcobb2022)
+
+- Modernize rust toolchain by defaulting to a `rustaceanvim` free default
+  configuration. Enabled via configuration
+  `vim.languages.rust.extensions.rustaceanvim.enable`.
+
 [BrockoliniMorgan](https://github.com/BrockoliniMorgan)
 
 - Renamed
@@ -679,5 +698,11 @@ https://github.com/gorbit99/codewindow.nvim
 [kruziikrel13](https://github.com/kruziikrel13)
 
 - Added persisted as session plugin to vim.session as `vim.session.persisted`
+
+[Adam0](https://github.com/adam01110):
+
+[cord.nvim]: https://github.com/vyfor/cord.nvim
+
+- Add [cord.nvim] plugin in `vim.presence.cord` with `enable` and `setupOpts`
 
 <!-- vim: set textwidth=80: -->
