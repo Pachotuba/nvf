@@ -7,17 +7,15 @@
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption;
   inherit (lib.meta) getExe;
+  inherit (lib.nvim.types) mkDapPresetEnableOption;
 
   cfg = config.vim.debugger.nvim-dap.presets.vscode-js-debug;
 in {
-  options.vim.debugger.nvim-dap.presets.vscode-js-debug = {
-    enable = mkEnableOption ''
-      Debug adapter for nodejs using vscode-js-debug.
-      Use {option}`vim.debugger.nvim-dap.adapters.vscode-js-debug` for customization.
-
-      A configuration is also needed for your filetype in
-      {option}`vim.debugger.nvim-dap.configurations`
-    '';
+  options.vim.debugger.nvim-dap.presets.debugpy = {
+    enable = mkDapPresetEnableOption {
+      option = "vscode-js-debug";
+      display = "`vscode-js-debug`";
+    };
   };
 
   config.vim.debugger.nvim-dap.adapters = mkIf cfg.enable {

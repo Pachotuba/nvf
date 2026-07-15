@@ -9,7 +9,7 @@
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib) genAttrs elem;
   inherit (lib.meta) getExe;
-  inherit (lib.types) enum bool coercedTo listOf ;
+  inherit (lib.types) enum bool coercedTo listOf;
   inherit (lib.generators) mkLuaInline;
   inherit (lib.nvim.attrsets) mapListToAttrs;
   inherit (lib.nvim.lua) toLuaObject;
@@ -128,9 +128,9 @@ in {
         };
 
       debugger = mkOption {
-          type = listOf (enum (attrNames dapConfigurations));
-          default = defaultDebugger;
-          description = "Typescript/Javascript debugger to use";
+        type = listOf (enum (attrNames dapConfigurations));
+        default = defaultDebugger;
+        description = "Typescript/Javascript debugger to use";
       };
     };
 

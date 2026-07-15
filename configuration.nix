@@ -70,7 +70,10 @@ isMaximal: {
         enable = true;
         dap.enable = true;
       };
-      go.enable = isMaximal;
+      go = {
+        enable = true;
+        dap.enable = true;
+      };
       lua.enable = isMaximal;
       zig.enable = isMaximal;
       python.enable = isMaximal;
